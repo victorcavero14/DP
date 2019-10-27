@@ -1,0 +1,57 @@
+1. 
+
+a. Tipo [[Bool]]	[[True]]
+b. ERROR DE TIPOS
+c. [[Bool]]		[[True]] 
+d. [Bool]		[True, True]
+e. Num a => [a]		[1,2,3]
+f. Num a => [[[a]]]	[[[1,2]],[]]	
+g. ERROR DE TIPOS [[1,1], 2] 
+h. [[[a]]]		[[],[[]]]
+
+2.
+
+a. Char
+b. [Char]
+c. Error
+d. Char
+e. ([Char], [Char])
+f. Num a => [(a, [Char])]
+g. ERROR por culpa del + ERROR DE TIPO
+h. ERROR div entre 0 EXCEPCION
+i1. ERROR FALTA "" ERROR SINTACTICO
+i2. [Char]
+i3. Error falta +
+i4. Error couldnt match char with [char]
+
+3.
+
+a. 'a'
+b. "f"
+c. Error
+d. 'f'
+e. ("abcd", "ef")
+f. [(5,"af")]
+g. Error por el + ERROR DE TIPO
+h. Error div entre 0 EXCEPCION
+i1. ERROR por "" ERROR SINTACTICO
+i2. "abbc"
+i3. Error falta +
+i4. Error couldnt match char with [char]
+
+4.
+1-d [0,2,4]
+2-c [[0], [2,4]]
+3-a [[[0], [2,4]]]
+4-b [[0], [2,4], []]
+
+5.
+a. VARIBLE Y FUERA DE AMBITO
+b. 4
+c. VARIABLE Z FUERA DE AMBITO
+d. 4
+e. ERROR SINTACTICO
+f. ERROR
+g. [1]
+h. 1
+i. ERROR DE TIPO

@@ -1,0 +1,67 @@
+
+1.
+    b) [[y^x | x <- [1..10]] | y <- [1..20]]
+
+    a) [[x^y | x <- [1..20]] | y <- [1..10]]
+
+2.
+
+    f x y = map (\u -> (g u,g (u+1))) y
+            where z = x * last y
+            g u = (x+z)*u
+
+    Transformándola: 
+
+        g:: Num a => a -> [a] -> a -> a
+        g x y u = (x + (z x y)) * u
+
+        h:: Num a => a -> [a] -> a -> (a,a)
+        h x y u = (g x y u , g x y (u+1))
+
+        z:: Num a => a -> [a] -> a
+        z x y = x + last y
+
+        f:: Num a => a -> [a] -> [(a,a)]
+        f x y = map (h x y ) y
+
+3. Las listas intensionales se cambian por map y las condiciones por filters
+
+    1. f n     = [x*x | x <- [1..n], mod x 2 == 0]
+
+       f n = map (\x -> x*x) filter even [1..n]
+
+       o tambien
+
+       f n = map f x filter even [1..n]
+                where f x = x*x
+
+    2. g n m   = [x+y | x <- [1..n], y <- [x..m]]
+
+        Paso 1: g n m = concat([[x+y] | y <- [x..m] | x <- [m..n]])
+        Paso 2: g n m = concat(map (\x -> [x + y | y <- [x..m]]) [1..n])
+        Paso 3: g n m = concat(map (\x -> map (\y -> x + y) [x..m]) [1..n])
+
+        g:: (Num a, Enum a) => a -> a -> [a]
+
+    3. h p n m = [x+y | x <- [1..n], p (n-x), y <- [x..m]]
+
+         Paso 1: h p n m = concat([[x+y] | y <- [x..m] | x <- [m..n], p (n-x)])
+         Paso 2: h p n m = concat(map (\x -> map (\y -> x + y) [x..m]) filter(\x -> p (n-x)) [1..n])
+
+        h:: (Num a, Enum a) =>(a -> Bool) -> a -> a -> [a]
+4.
+    c)  
+        numDivEntre:: Integral a => a -> a -> [(a,[a])] 
+        numDivEntre n m = [(y, [x | x <- [1.. y-1], rem y x == 0]) / y <- [n..m]]
+
+        numPerfectos:: Integral a => a -> [a]
+        numPerfectos m = [n | (n, xs)<- numDivEntre 1..m, sum xs::n]
+
+
+5.
+    minimoDesde p n = head (filler p [n ..])
+    minimoDesde' p n = head [x | x <- [n..], p x]
+    minimoDesde'' p n = head $duplicate (not.p) [n..]
+
+    esPrimo n = 
+    primerPrimo692 = minimoDesde esPrimo 692
