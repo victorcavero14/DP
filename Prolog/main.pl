@@ -1,11 +1,4 @@
 
-main :- 
-	write("Hola Mundo"),
-	nl,
-	write("¿Cuál es tu nombre? "),
-	read_string(user_input,['\n'],[],_,Nombre),
-	write("Hola "),write(Nombre),nl,
-	halt.
-
-
+p(c,X,X).
+p(f(X),Y,f(Z)) :- p(X,Y,Z).
 

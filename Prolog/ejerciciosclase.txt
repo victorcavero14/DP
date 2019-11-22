@@ -1,0 +1,54 @@
+- PROLOG EJERCICIO DE CLASE: 
+
+p(c,X,X).
+p(f(X),Y,f(Z)) :- P(X,Y,Z).
+
+1.  ?- p(c,f(c),X).
+X = f(c)
+
+execution tree:
+
+p(c,f(c),X)
+    |
+    | [X1/f(c), X/f(c)]
+  Éxito 
+  X = f(c)
+
+2. ?- p(c,X,Y).
+   X = Y o Y = X //como los dos son variables nos da igual la forma de ponerlos
+
+execution tree:
+
+p(c,X,Y).
+	|
+	| X1/X X1/Y
+	| X1/X X/Y
+      Éxito
+      X = Y
+
+3. ?- p(c,X,f(c)). //Igual que el primero.
+   X = f(c)
+
+
+4. ?- p(f(x), f(c), Y). 
+   X = C
+   Y = f(f(c))
+
+execution tree:
+
+			p(f(x), f(c), Y). (NODO)
+	|
+	| X1/X, Y1/f(c), Y/f(z1)
+	|
+		     			p(X,f(c), z1)   (NODO)
+	|								|
+	| X/c, X2/f(c), z1/f(c)						| X/f(X2), Y2/f(c), Z1/f(Z2)
+	|								| 
+     Éxito //Cuando se da un exito es cuando 			      		P(X2, f(c), Z2) (NODO)
+	     se realiza el backtracking para buscar mas soluciones	|					|X2/f(X3)
+     X = c, Y = f(z1)=f(f(c))						|X2/c X3/f(c) Z2/f(c)			| ... RAMA INFINITA!
+									|					|
+								      Éxito
+								      X = f(c)
+								      Y = f(Z1) = f(f(z2)) = f(f(f(c)))
+
