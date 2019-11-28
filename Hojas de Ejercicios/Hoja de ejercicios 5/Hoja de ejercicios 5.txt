@@ -1,0 +1,98 @@
+----Ejercicio 1:
+
+(a){p(g(Y), f(X, h(X), Y)), p(X, f(g(Z), W, Z))}.
+
+    { g(Y) = X, f(X, h(X), Y), f(g(Z), W, Z)} Descomposición
+    { g(Y) = X, X = g(Z), W = h(X), Z = Y} Ligadura
+    { g(Y) = g(Z), W = h(X), Z = Y} 
+    { X = g(Z), Y = Z , W = H(G(Z)), Z = Z } 
+
+
+(b){p(a, X, f(g(Y))), q(Y, f(Z), f(Z))}.
+
+(c){q(a, X, f(g(Y))), q(Y, f(Z), f(Z))}.
+
+    {a = Y, X = f(Z), f(g(Y)) = f(Z)} Descomposición
+    {a = Y, X = f(Z), g(Y) = Z} Reorden
+    {Y = a, X = f(Z), g(Y) = Z} Ligadura
+    {Y = a, X = f(Z), g(a) = Z} Reorden
+    {Y = a, X = f(Z), Z = g(a)} Ligadura
+    {Y = a, X = f(g(a)), Z = g(a)} UMG
+
+(d){¬p(f(g(a, b), g(h(Z), b)), h(X)),¬p(f(X, X), h(g(Z, Z)))}.
+
+    {¬p(f(X,X), h(g(Z,Z)))}Descomposición
+
+    {f(g(a,b),g(h(z), b)) = f(X,X), h(X) = h(g(Z,Z))} Descomposición
+
+    {f(g(a,b)), g(h(z),b)) = f(X,X), X = g(Z,Z)} Descomposición
+
+    {} Ligadura
+
+    {} Descomposición
+
+    {} Finalmente se da cuenta de queda algo contradictorio
+
+
+(e){p(X, Y), p(f(a), g(X)), p(f(Z), g(f(Z)))}.
+
+    {X = f(a), Y = g(X), f(f(a),g(X) = f(f(Z)), g(f(Z)))} Descomposición
+    {X = f(a), Y = g(X), f(a) = f(Z), g(X) = g(f(Z))} Descomposición
+    {X = f(a), Y = g(f(a)), f(a) = f(Z), g(f(a)) = g(f(z))} Ligadura
+    {X = f(a), Y = g(f(a)), a = Z, g(f(a)) = g(f(a))} Descomposición
+    {X = f(a), Y = g(f(a)), Z = a} Reorden UMG
+
+
+(f){p(X, f(g(Y), b)), p(h(a, Y), f(g(k(X)), b))}
+    {}Descomposición
+    {}Descomposición
+    {}Descomposición
+    {}Descomposición
+    {X = h(a,Y), Y = h(h(a,Y))} Ligadura, FALLO OCCUR CHECK
+
+----Ejercicio 2:
+
+Las hemos definido de forma recursiva
+
+suma(c, Y, Y):- nat(Y).
+suma(s(X), Y, s(Z)) :- suma(X,Y,Z), nat(Y).
+
+prod(c, Y, c) :- nat(Y).
+prod(s(X), Y, Z) :- prod(X,Y,Z1), suma(Z1, Y, Z).
+
+*Con recursion final:
+
+prod(X,Y,Z) :- prod_aux(X,Y,c,Z).
+
+prod_aux (c, _, AC, AC).
+prod_aux (s(X), Y, AC, Z) :- suma(Y,AC,AC1), prod_aux(X,Y,AC1,Z).
+
+**
+
+pot(s(X), c, s(Y)):- nat(X).
+pot(s(X), s(Y), Y):- pot(s(X), N, Z1), prod (Z1, s(x), Y).
+
+**Con recursion final:
+
+pot(s(X), N,Y):- pot_aux(S(X), N, s(c), Y).
+
+pot_aux(_, C, AC,AC).
+pot_aux(s(X), s(N), AC, Y) :- prod(s(X), AC, AC1), pot_aux(s(X), N, AC1, Y)
+
+**
+
+fib(X, Y) :- fib(X, c, s(c), Y).
+fib(s(X), A1, A2, Y):- sum(A1, A2, A3).
+fib(X,A2,A3,Y).
+
+-- Ejercicio 3: FOTO del arbol en el movil
+
+
+-- Ejercicio 4:
+
+pol_fib(c,X,s(c)) :- nat(X).
+pol_fib(S(N), X, PF):- fib(S(N),F), pot(X,S(N), P), prod(F,P,Z),
+                        pol_fib(N,X,PF1), suma(Z,PF1, PF).
+
+-- En cuanto a eficiencia es malo ya que va recalculando valores ya calculados.
+
