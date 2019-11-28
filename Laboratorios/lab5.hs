@@ -1,9 +1,6 @@
 -- Alumno: Víctor Manuel Cavero Gracia 3ºA
 -- Asignatura: Programación Declarativa
 
-import Data.List
-import Data.Char
-import Data.List.Split
 import System.IO
 
 --Ejercicio 1: 
@@ -12,9 +9,10 @@ adivina :: Int -> IO()
 adivina n = do
     putStr "Guess: "
     number <- getLine
-    if ((read number :: Int) == n) then putStrLn "Congrats!!! You guessed!"
+    let num = (read number :: Int)
+    if (num == n) then putStrLn "Congrats!!! You guessed!"
     else
-        if ((read number :: Int) > n) then do
+        if (num > n) then do
             putStrLn "Oh... that's higher"
             adivina n
         else do 
@@ -35,12 +33,10 @@ contarpalabras = do
 
 palabras:: String -> IO Int 
 palabras path = do
-    handle <- openFile path ReadMode
-    contents <- hGetContents handle
+    contents <- readFile path
     let x = length (words contents)
-    putStrLn ("Size: " ++ (show x))
-    hClose handle
     return x
+  
 
 --b
 
@@ -48,12 +44,9 @@ palabras' :: IO()
 palabras' = do
     putStr "Insert a line: " 
     line <- getLine
-    handle <- openFile line ReadMode
-    contents <- hGetContents handle
+    contents <- readFile line
     let x = length (words contents)
     putStrLn ("El fichero " ++ line ++ " tiene " ++ (show x) ++ " palabras.")
-    hClose handle
-
 
 --c
 
