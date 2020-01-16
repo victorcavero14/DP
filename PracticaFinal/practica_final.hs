@@ -1,12 +1,25 @@
--- Alumno: Víctor Manuel Cavero Gracia
+-- Alumno: Víctor Manuel Cavero Gracia 45355080T
 -- Asignatura: Programación Declarativa
 -- Práctica Final
+
+import System.IO -- Necesario para la segunda parte
+
+-- Tipos de datos utilizados
 
 data Vertice = A|B|C|D|E|F deriving (Show, Read, Eq)
 
 data Grafo = G [Vertice] [(Vertice, Vertice)] deriving (Show, Read, Eq)
 
 type Matriz = [[Bool]]
+
+-- Variables globales tipo Grafo para las pruebas de los algoritmos (Al menos dos isomorfos entre si y al menos dos no) 
+
+g1 =  G [B,D,E,C] [(D,E),(E,B),(C,B),(E,C)]
+g2 =  G [D,F,E] [(D,F),(E,D),(D,E),(F,E)]
+g3 =  G [A,C,D] [(A,C),(C,D),(A,D)]
+g4 = 
+g5 = 
+g6 = 
 
 -- PRIMERA PARTE
 
@@ -68,8 +81,21 @@ grados_neg g
            | i == length ms = []
            | otherwise = (vs !! i, sum $ map fromEnum $ map (!! i) ms ) : grados_neg_aux (G vs as) ms (i+1)
 
---camino_lng :: Grafo -> Vertice -> Int -> [[(Vertice, Vertice)]]
---camino_lng (G vs as) v n = camino_lng_aux vs as v n
+camino_lng :: Grafo -> Vertice -> Int -> [[Vertice]]
+camino_lng (G vs as) v n
+   | not $ es_grafo (G vs as) = error "No es un grafo valido"
+   | as == [] = []
+   | n == 0 = [[v]]
+   | n > length vs = []
+   | otherwise = concat $ camino_lng_auxi (G vs as) 0 v n
+   where
+      camino_lng_auxi :: Grafo -> Int -> Vertice -> Int -> [[[Vertice]]]
+      camino_lng_auxi (G vs as) i v n
+         | i == length vs = []
+         | auxiliar /= [[]] = auxiliar : camino_lng_auxi (G vs as) (i+1) v n
+         | otherwise = camino_lng_auxi (G vs as) (i+1) v n
+         where
+            auxiliar = filter (\l -> length l == (n+1)) $ genera_caminos (buscar_adyacentes (G vs as)) v (vs !! i)
 
 conexo :: Grafo -> Bool
 conexo (G vs as)
@@ -90,7 +116,7 @@ conexo (G vs as)
 
 -- FUNCIONES AUXILIARES
 
--- Dado un vertices y grafo, obtiene los vertices adyacentes al vertice dado
+-- Dado un vertice y un grafo, obtiene los vertices adyacentes al vertice dado
 buscar_adyacentes :: Grafo -> Vertice -> [Vertice]
 buscar_adyacentes (G _ []) _ = []
 buscar_adyacentes (G vs (a:as)) v 
@@ -98,6 +124,8 @@ buscar_adyacentes (G vs (a:as)) v
    | (fst a) == v = (snd a) : buscar_adyacentes (G vs as) v
    | otherwise = buscar_adyacentes (G vs as) v
 
+-- Dada la funcion buscar_adyacente y dos vertices (uno de inicio y otro de final) te devuelve
+-- una lista de los caminos posibles para llegar entre ellos
 genera_caminos :: (Vertice -> [Vertice]) -> Vertice -> Vertice -> [[Vertice]]
 genera_caminos succ prin fin = map reverse $ busca [] [[]] prin
   where
@@ -113,17 +141,26 @@ genera_caminos succ prin fin = map reverse $ busca [] [[]] prin
 
 -- SEGUNDA PARTE
 
---leegrafo
+leegrafo 
+
+leegrafo :: IO()
+leegrafo = do
+    vertice <- inserteVertice
+   
+inserteVertice :: IO([Vertice])
+inserteVertice = do
+    putStr "Insete un vertice del grafo: "
+    vertice <- getLine
+    if (vertice == "") then putStrLn "ERROR Vertice invalido"
+    else
+       if(vertice == "-1") then do
+          putStrLn "Vertices escogidos"
+          return vertice
+       else do
+          putStrLn "Vertice insertado"
+          inserteVertice
+          
 --muestra_matriz
 --muestra_caminos
 
---Poner todos los tipos de las funciones, solo usar PRELUDE y definir 6 grafos ejemplos (3 dados y 3 mios)
 
-obtener_g1 :: Grafo
-obtener_g1 = G [B,D,E,C] [(D,E),(E,B),(C,B),(E,C)]
-
-obtener_g2 :: Grafo
-obtener_g2 = G [D,F,E] [(D,F),(E,D),(D,E),(F,E)]
-
-obtener_g3 :: Grafo
-obtener_g3 = G [A,C,D] [(A,C),(C,D),(A,D)]
