@@ -2,8 +2,6 @@
 -- Asignatura: Programación Declarativa
 -- Práctica Final
 
-import System.IO -- Necesario para la segunda parte
-
 -- Tipos de datos utilizados
 
 data Vertice = A|B|C|D|E|F deriving (Show, Read, Eq)
@@ -17,9 +15,9 @@ type Matriz = [[Bool]]
 g1 =  G [B,D,E,C] [(D,E),(E,B),(C,B),(E,C)]
 g2 =  G [D,F,E] [(D,F),(E,D),(D,E),(F,E)]
 g3 =  G [A,C,D] [(A,C),(C,D),(A,D)]
-g4 = 
-g5 = 
-g6 = 
+g4 =  G [A,B,C,D,E] [(A,B), (B,C), (C,D), (D,E), (A,E), (D,A), (E,C)]
+g5 =  G [F,E,D] [(F,E), (D,F), (F,D), (E,D)] -- Isomorfo con g2
+g6 =  G [A,B,C,D,E,F]  [(A,C), (A,D), (A,F), (B,D), (D,F)]
 
 -- PRIMERA PARTE
 
@@ -141,26 +139,85 @@ genera_caminos succ prin fin = map reverse $ busca [] [[]] prin
 
 -- SEGUNDA PARTE
 
-leegrafo 
 
-leegrafo :: IO()
+leegrafo :: IO(Grafo)
 leegrafo = do
-    vertice <- inserteVertice
-   
-inserteVertice :: IO([Vertice])
-inserteVertice = do
-    putStr "Insete un vertice del grafo: "
-    vertice <- getLine
-    if (vertice == "") then putStrLn "ERROR Vertice invalido"
-    else
-       if(vertice == "-1") then do
-          putStrLn "Vertices escogidos"
-          return vertice
-       else do
-          putStrLn "Vertice insertado"
-          inserteVertice
-          
---muestra_matriz
---muestra_caminos
+    putStrLn "Insercion de vertices y aristas. Introduzca la cadena vacia para terminar la operacion. \n"
+    vertices <- insertarVertice []
+    aristas <- insertarAristas []
+    let grafo = G (reverse $ vertices) (reverse $ aristas)
+    if(es_grafo grafo == False) then do
+       putStrLn "Grafo invalido, por favor inserte otro en su lugar."
+       return (G [] [])
+    else do 
+       return grafo
+     
+--Funciones Auxiliares para leer el grafo.
 
+insertarVertice :: [Vertice] -> IO [Vertice]
+insertarVertice vs = do
+   putStr "Inserte un vertice del grafo (posibles A|B|C|D|E|F): "
+   entrada <- getLine
+   if entrada == "" then return vs
+   else do
+      let vertice = (read entrada :: Vertice)
+      insertarVertice (vertice : vs)
+
+insertarAristas :: [(Vertice,Vertice)] -> IO [(Vertice,Vertice)]
+insertarAristas as = do
+   putStr "Inserte una arista: "
+   entrada <- getLine
+   if entrada == "" then return as
+   else do
+      let arista = (read entrada :: (Vertice,Vertice))
+      insertarAristas (arista : as)
+
+
+muestra_matriz :: IO()
+muestra_matriz = do
+   grafo <- leegrafo
+   let matriz = mat_ady grafo
+   muestra_matriz_auxi grafo matriz 0
+    
+-- Funciones auxiliares para mostrar la matriz.
+
+muestra_matriz_auxi :: Grafo -> Matriz -> Int -> IO()
+muestra_matriz_auxi (G vs as) ms i = do
+   if (i == length vs)  then return ()
+   else do
+      muestra_matriz_auxj (G vs as) ms i 0
+      muestra_matriz_auxi (G vs as) ms (i+1)
+
+muestra_matriz_auxj :: Grafo -> Matriz -> Int -> Int -> IO()
+muestra_matriz_auxj (G vs as) ms i j = do
+    if (j == length vs) then do 
+      putStr "\n"
+      return ()
+    else do
+      let aux = fromEnum ((ms !! i) !! j)
+      putStr $ show (aux) ++ "     "
+      muestra_matriz_auxj (G vs as) ms i (j+1)
+
+
+muestra_caminos :: IO()
+muestra_caminos = do
+   grafo <- leegrafo
+   let es_conexo = conexo grafo
+   if es_conexo then do 
+      muestra_caminos_aux grafo 0
+   else do 
+      putStrLn "El grafo no es conexo. "
+      return ()
+
+muestra_caminos_aux :: Grafo -> Int -> IO()
+muestra_caminos_aux (G vs as) i = do
+   if (i == length vs) then return ()
+   else do
+      let v = vs !! 0 -- es_grafo obliga a que existan vertices, desde el primero busco todos los caminos
+      let caminos = genera_caminos (buscar_adyacentes (G vs as)) v (vs !! i)
+      putStr ("Camino posible desde  " ++ (show v) ++ " hasta " ++ (show $ vs !! i) ++ " es : ") 
+      let resultado = foldr (\x y -> if y == "" then x else x ++ " - " ++ y) "" (map show (caminos !! 0))      
+      --  (caminos !! 0) Siempre existe, ya que el grafo es conexo
+      putStr (resultado ++ " \n")
+      muestra_caminos_aux (G vs as) (i+1)
 
