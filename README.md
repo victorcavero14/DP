@@ -8,7 +8,7 @@ This is a subject of the computer science degree of UCM.
 
 ## General Description 
 
-This repository contains exercises, labs and the final proyect of the subject.
+This repository contains exercises, labs and the final project of the subject.
 
 ## Author
 
